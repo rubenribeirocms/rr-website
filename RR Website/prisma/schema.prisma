@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("Staff")
+  disabled  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  notes     ClinicalNote[]
+  invoices  Invoice[]
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  createdAt DateTime @default(now())
+
+  appointments Appointment[]
+  notes        ClinicalNote[]
+  microscopy   MicroscopyAnalysis[]
+  invoices     Invoice[]
+}
+
+model Appointment {
+  id         String   @id @default(cuid())
+  date       DateTime
+  treatment  String
+  location   String
+  notes      String?
+  name       String?
+  email      String?
+  phone      String?
+  createdAt  DateTime @default(now())
+
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id])
+}
+
+model ClinicalNote {
+  id         String   @id @default(cuid())
+  content    String
+  createdAt  DateTime @default(now())
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model MicroscopyAnalysis {
+  id         String   @id @default(cuid())
+  imageUrl   String
+  report     String
+  createdAt  DateTime @default(now())
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+}
+
+model Invoice {
+  id         String   @id @default(cuid())
+  date       DateTime @default(now())
+  currency   String
+  status     String   @default("Unpaid")
+  vat        Float    @default(0)
+  total      Float
+
+  items      Json
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
