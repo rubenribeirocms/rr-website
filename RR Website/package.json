@@ -16,7 +16,7 @@
     "bcrypt": "5.1.1",
     "pdf-lib": "1.17.1",
     "sharp": "0.33.3",
-    "@vercel/blob": "1.1.2",
+    "@vercel/blob": "3.0.0",
     "openai": "4.24.0"
   },
   "devDependencies": {
