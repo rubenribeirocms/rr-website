@@ -1,0 +1,1 @@
+This is a placeholder project structure. Due to size limits, full code is not included.
